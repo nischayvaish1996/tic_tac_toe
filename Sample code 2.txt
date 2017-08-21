@@ -1,0 +1,94 @@
+ protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start_page);
+        FullScreen fullScreen = new FullScreen();                //for making full screen
+        fullScreen.makefullscreen(StartPage.this);
+        Init();
+        SetFont();
+
+
+       /* Checkbox();*/
+        playbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playbutton.startAnimation(myAnimation1);
+                SelectGameMode();
+                SendPlayerNameToGamepage();
+                startActivity(playbuttonintent);
+                overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
+            }
+        });
+        statistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent statisticsintent = new Intent(StartPage.this, Statistics.class);
+                startActivity(statisticsintent);
+            }
+        });
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingintent = new Intent(StartPage.this, Settings.class);
+                startActivity(settingintent);
+            }
+        });
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setAlertDialog();
+
+
+            }
+        });
+    }
+
+    public void SelectGameMode() {
+        if (state.equals("Easy")) {
+            playbuttonintent = new Intent(StartPage.this, GamePage_Easy.class);
+        } else if (state.equals("Medium")) {
+            playbuttonintent = new Intent(StartPage.this, GamePage_Medium.class);
+        } else {
+            playbuttonintent = new Intent(StartPage.this, GamePage_Hard.class);
+        }
+
+    }
+
+
+    public void setAlertDialog() {
+        quit_dialog = new Dialog(this);
+        quit_dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        /*quit_dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);*/
+        quit_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        quit_dialog.setContentView(R.layout.quit_dialog);
+        quit_dialog.setCancelable(false);
+        yes_text = (TextView) quit_dialog.findViewById(R.id.yes_text);
+        no_text = (TextView) quit_dialog.findViewById(R.id.no_text);
+        slash = (TextView) quit_dialog.findViewById(R.id.slash);
+        yes_text.setText("Yes");
+        no_text.setText("No");
+        slash.setText("/");
+        tf3 = Typeface.createFromAsset(getAssets(), "courbd.ttf");
+        yes_text.setTypeface(tf3);
+        no_text.setTypeface(tf3);
+        slash.setTypeface(tf3);
+        quit_dialog.show();
+        quit_dialog.getWindow().getDecorView().setSystemUiVisibility(this.getWindow().getDecorView().getSystemUiVisibility());
+        quit_dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+        yes_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                yes_text.startAnimation(myAnimation2);
+                onAnimationEnd(myAnimation2);
+            }
+        });
+        no_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                no_text.startAnimation(myAnimation3);
+                onAnimationEnd(myAnimation3);
+            }
+        });
+
+
+    }

@@ -1,0 +1,114 @@
+public class GamePage_Easy extends Activity implements Animation.AnimationListener {
+    TextView tv1, tv2, tv3, tv4, tv5, tv6, tv7, tv8, tv9;
+    LinearLayout statistics, setting;
+    Bundle bundle;
+    Dialog lose_dialog;
+    RelativeLayout parent;
+    SharedPreferences sharedpreferences_easy;
+    Typeface tf1, tf2;
+    ImageView gamelogo;
+    AnimationDrawable frameAnimation;
+    Animation myAnimation1, myAnimation2, myAnimation3, myAnimation4, myAnimation5, zoom_in, zoom_out, slideup;
+    ImageButton button[][];
+    String player1, player2, start_won, start_loss;
+    int c[][];
+    int winscore = 0, losscore = 0;
+    int i, j = 0, a = 0, b = 0, updatedscore1 = 0, updatedscore2 = 0;
+    AI ai;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.game_page_easy);
+        //for making full screen
+        FullScreen fullScreen = new FullScreen();
+        fullScreen.makefullscreen(GamePage_Easy.this);
+        getPreviousValueOfSharedPreference();
+        //Button Initialization
+        buttonInit();
+        // other elements initialization
+        init();
+        //font set
+        setfont();
+        //this method is used to set score in the
+        // changed activity(acitvity changes when there is situation such as winning,losing,tie)
+
+        //getting Player  Name
+        playerNameSet();
+        setBoard();
+        if (getIntent().getExtras() != null) {
+
+            OnActivityReload();
+            //if bundle!=null that means activity shoot by intent and having some data
+        }
+        statistics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent statisticsintent = new Intent(GamePage_Easy.this, Statistics.class);
+                startActivity(statisticsintent);
+            }
+        });
+        gamelogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+               /* Intent homeintent = new Intent(GamePage_Easy.this, StartPage.class);*/
+                GamePage_Easy.this.finish();
+               /* startActivity(homeintent);*/
+            }
+        });
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingintent = new Intent(GamePage_Easy.this, Settings.class);
+                startActivity(settingintent);
+            }
+        });
+
+    }
+
+    public void playerNameSet() {
+        Intent intent = getIntent();
+        player1 = intent.getStringExtra("PlayerName");
+        player2 = intent.getStringExtra("ComputerName");
+        tv3.setText(player1);
+        tv4.setText(player2);
+
+    }
+
+    public void OnActivityReload() {
+
+        Bundle extras = getIntent().getExtras();
+        winscore = extras.getInt("score1");
+        losscore = extras.getInt("score2");
+        tv5.setText("0" + winscore);
+        tv6.setText("0" + losscore);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    private void setBoard() {
+        for (i = 1; i <= 3; i++) {
+            for (j = 1; j <= 3; j++)
+                //mark empty box =2
+                c[i][j] = 2;
+        }
+        for (i = 1; i <= 3; i++) {
+            for (j = 1; j <= 3; j++) {
+                //on button click
+                button[i][j].setOnClickListener(new MyClickListener(i, j));
+                if (!button[i][j].isEnabled()) {
+                    button[i][j].setEnabled(false);
+                    button[i][j].setImageResource(android.R.color.transparent);
+                    button[i][j].setEnabled(true);
+                }
+            }
+        }
+
+    }
